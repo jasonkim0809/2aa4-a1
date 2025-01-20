@@ -23,6 +23,7 @@ public class Main {
 
         Options options = new Options();
         options.addOption("i","input",true,"maze input");
+        options.addOption("p","path",true,"custom path input");
 
         CommandLineParser parser = new DefaultParser();
         CommandLine cmdline;
@@ -36,14 +37,13 @@ public class Main {
 
         // "actual" main code starts here VVV
 
-        String raw_maze = "";
-
         Maze maze;
 
         if (cmdline.hasOption("i")){
             try { // read maze from file
-                logger.info("**** Reading the maze from file " + args[1]);
-                maze = new Maze(args[1]);
+                String filepath = cmdline.getOptionValue("i");
+                logger.info("**** Reading the maze from file " + filepath);
+                maze = new Maze(filepath);
                 maze.printMaze();
             } catch(Exception e) {
                 logger.error("/!\\ An error has occured /!\\");
@@ -102,7 +102,13 @@ class Maze{
             System.out.print(System.lineSeparator());
         }
     }
-    
+}
+
+class Solver{
+    String path = "";
+    void findPath(int[][] maze){ // maze is assumed to be in the correct format
+
+    }
     String toFactorized(String input){ // consists of F, R, or L
         char current = input.charAt(0);
         int sum = 0;
