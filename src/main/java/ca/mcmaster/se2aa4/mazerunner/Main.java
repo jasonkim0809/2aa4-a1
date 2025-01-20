@@ -36,21 +36,33 @@ public class Main {
 
         // "actual" main code starts here VVV
 
+        String raw_maze = "";
+
         if (cmdline.hasOption("i")){
             try { // read maze from file
                 logger.info("**** Reading the maze from file " + args[1]);
                 BufferedReader reader = new BufferedReader(new FileReader(args[1]));
                 String line;
+                int x,y = 0;
+
+                while ((line = reader.readLine()) != null){
+                    y++;
+                }
+                x = line.length();
                 while ((line = reader.readLine()) != null) {
                     for (int idx = 0; idx < line.length(); idx++) {
                         if (line.charAt(idx) == '#') {
-                            System.out.print("# ");
+                            System.out.print(line.charAt(idx)+" ");
+                            raw_maze += "1";
                         } else if (line.charAt(idx) == ' ') {
-                            System.out.print("  ");
+                            raw_maze +="0";
+                            System.out.print(line.charAt(idx)+" ");
                         }
                     }
                     System.out.print(System.lineSeparator());
+                    raw_maze += " ";
                 }
+                System.out.println(raw_maze);
             } catch(Exception e) {
                 logger.error("/!\\ An error has occured /!\\");
             }
@@ -59,6 +71,7 @@ public class Main {
             logger.info("Must use the -i flag");
         }
 
+
         logger.info("**** Computing path");
         logger.info("PATH NOT COMPUTED");
         logger.info("** End of MazeRunner");
@@ -66,7 +79,26 @@ public class Main {
 }
 
 class Maze{
-
+    int[][] data;
+    
+    public Maze(String filepath){
+        try { // read maze from file
+            BufferedReader reader = new BufferedReader(new FileReader(filepath));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                for (int idx = 0; idx < line.length(); idx++) {
+                    if (line.charAt(idx) == '#') {
+                        System.out.print(line.charAt(idx)+" ");
+                    } else if (line.charAt(idx) == ' ') {
+                        System.out.print(line.charAt(idx)+" ");
+                    }
+                }
+                System.out.print(System.lineSeparator());
+            }
+        } catch(Exception e) {
+            return;
+        }
+    }
     
     static String toFactorized(String input){ // consists of F, R, or L
         char current = input.charAt(0);
