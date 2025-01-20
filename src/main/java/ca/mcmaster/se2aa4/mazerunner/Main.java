@@ -38,31 +38,13 @@ public class Main {
 
         String raw_maze = "";
 
+        Maze maze;
+
         if (cmdline.hasOption("i")){
             try { // read maze from file
                 logger.info("**** Reading the maze from file " + args[1]);
-                BufferedReader reader = new BufferedReader(new FileReader(args[1]));
-                String line;
-                int x,y = 0;
-
-                while ((line = reader.readLine()) != null){
-                    y++;
-                }
-                x = line.length();
-                while ((line = reader.readLine()) != null) {
-                    for (int idx = 0; idx < line.length(); idx++) {
-                        if (line.charAt(idx) == '#') {
-                            System.out.print(line.charAt(idx)+" ");
-                            raw_maze += "1";
-                        } else if (line.charAt(idx) == ' ') {
-                            raw_maze +="0";
-                            System.out.print(line.charAt(idx)+" ");
-                        }
-                    }
-                    System.out.print(System.lineSeparator());
-                    raw_maze += " ";
-                }
-                System.out.println(raw_maze);
+                maze = new Maze(args[1]);
+                maze.printMaze();
             } catch(Exception e) {
                 logger.error("/!\\ An error has occured /!\\");
             }
@@ -70,7 +52,7 @@ public class Main {
         else{
             logger.info("Must use the -i flag");
         }
-
+        
 
         logger.info("**** Computing path");
         logger.info("PATH NOT COMPUTED");
@@ -85,22 +67,43 @@ class Maze{
         try { // read maze from file
             BufferedReader reader = new BufferedReader(new FileReader(filepath));
             String line;
+            
+            int x = 0;
+            int y = 0;
+
+            while ((line = reader.readLine()) != null){
+                y++;
+                x = line.length();
+            }
+
+            this.data = new int [y][x]; // create a new 2d array, 0 = open area, 1 = wall
+
+            reader = new BufferedReader(new FileReader(filepath));
+            int row = 0;
+
             while ((line = reader.readLine()) != null) {
-                for (int idx = 0; idx < line.length(); idx++) {
-                    if (line.charAt(idx) == '#') {
-                        System.out.print(line.charAt(idx)+" ");
-                    } else if (line.charAt(idx) == ' ') {
-                        System.out.print(line.charAt(idx)+" ");
+                for (int i = 0; i < line.length(); i++) {
+                    if (line.charAt(i) == '#') {
+                        this.data[row][i] = 1;
                     }
                 }
-                System.out.print(System.lineSeparator());
+                row++;
             }
         } catch(Exception e) {
             return;
         }
     }
+
+    void printMaze(){
+        for (int i = 0; i < this.data.length;i++){
+            for (int j = 0; j < this.data[i].length;j++){
+                System.out.print(this.data[i][j]+" ");
+            }
+            System.out.print(System.lineSeparator());
+        }
+    }
     
-    static String toFactorized(String input){ // consists of F, R, or L
+    String toFactorized(String input){ // consists of F, R, or L
         char current = input.charAt(0);
         int sum = 0;
         String factorized = "";
