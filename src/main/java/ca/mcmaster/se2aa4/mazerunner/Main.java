@@ -48,7 +48,18 @@ public class Main {
             } catch(Exception e) {
                 logger.error("/!\\ An error has occured /!\\");
             }
-            maze.printSol();
+            if (cmdline.hasOption("p")){
+                String command = cmdline.getOptionValue("p");
+                if (maze.checkSol(command)){
+                    logger.info("Solution works");
+                }
+                else {
+                    logger.info("Solution does NOT WORK");
+                }
+            }
+            else{
+                maze.printSol();
+            }
         }
         else{
             logger.info("Must use the -i flag");
@@ -102,6 +113,10 @@ class Maze{
         System.out.println(solver.toFactorized(solver.path));
     }
 
+    boolean checkSol(String instructions){
+        return solver.tryPath(instructions,data);
+    }
+
     void printMaze(){
         for (int i = 0; i < this.data.length;i++){
             for (int j = 0; j < this.data[i].length;j++){
@@ -147,11 +162,37 @@ class Solver{
                 // turn around and move forward
                 current_direction = (current_direction + 1) % 4;
                 current_direction = (current_direction + 1) % 4;
-                this.path = this.path + "RR";
+                this.path = this.path + "RRF";
             }
             coordinate[0] += directions[current_direction][0];
             coordinate[1] += directions[current_direction][1];
         }
+    }
+
+    boolean tryPath(String instructions, int[][] maze){
+        coordinate[0] = findStartPos(maze,0); // search leftmost column for open area
+        coordinate[1] = 0; // starting column is the leftmost, placeholder for now
+        for (int i = 0; i < instructions.length(); i++){
+            System.out.println(coordinate[0]+" "+coordinate[1]);
+            if (instructions.charAt(i) == 'R'){
+                current_direction = (current_direction + 1) % 4;
+            }
+            else if (instructions.charAt(i) == 'L'){
+                current_direction = (current_direction - 1 + 4) % 4;
+            }
+            else if(instructions.charAt(i) == 'F'){
+                coordinate[0] += directions[current_direction][0];
+                coordinate[1] += directions[current_direction][1];
+            }
+
+            if (maze[coordinate[0]][coordinate[1]] == 1){ // if the current coordinate is a wall
+                return false;
+            }
+        }
+        if (coordinate[1] == maze[0].length-1){
+            return true;
+        }
+        return false;
     }
 
     int findStartPos(int[][] maze,int col){
