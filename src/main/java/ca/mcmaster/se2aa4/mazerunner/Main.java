@@ -173,7 +173,6 @@ class Solver{
         coordinate[0] = findStartPos(maze,0); // search leftmost column for open area
         coordinate[1] = 0; // starting column is the leftmost, placeholder for now
         for (int i = 0; i < instructions.length(); i++){
-            System.out.println(coordinate[0]+" "+coordinate[1]);
             if (instructions.charAt(i) == 'R'){
                 current_direction = (current_direction + 1) % 4;
             }
@@ -183,6 +182,10 @@ class Solver{
             else if(instructions.charAt(i) == 'F'){
                 coordinate[0] += directions[current_direction][0];
                 coordinate[1] += directions[current_direction][1];
+            }
+
+            if (coordinate[1] < 0 || coordinate[1] >= maze[0].length){ // out of bounds check
+                return false;
             }
 
             if (maze[coordinate[0]][coordinate[1]] == 1){ // if the current coordinate is a wall
