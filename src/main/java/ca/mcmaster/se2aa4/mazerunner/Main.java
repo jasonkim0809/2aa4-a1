@@ -41,8 +41,10 @@ public class Main {
 
         if (cmdline.hasOption("i")){
             try { // read maze from file
+                
                 String filepath = cmdline.getOptionValue("i");
                 logger.info("**** Reading the maze from file " + filepath);
+                logger.info("**** Computing path");
                 maze = new Maze(filepath);
                 maze.printMaze();
             } catch(Exception e) {
@@ -64,9 +66,7 @@ public class Main {
         else{
             logger.info("Must use the -i flag");
         }
-        
-
-        logger.info("**** Computing path");
+    
         logger.info("PATH NOT COMPUTED");
         logger.info("** End of MazeRunner");
     }
