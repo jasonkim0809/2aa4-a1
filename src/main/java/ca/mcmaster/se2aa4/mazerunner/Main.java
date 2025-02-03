@@ -19,8 +19,6 @@ public class Main {
 
     public static void main(String[] args) {
         
-        logger.info("** Starting Maze Runner");
-
         Options options = new Options();
         options.addOption("i","input",true,"maze input");
         options.addOption("p","path",true,"custom path input");
@@ -43,20 +41,18 @@ public class Main {
             try { // read maze from file
                 
                 String filepath = cmdline.getOptionValue("i");
-                logger.info("**** Reading the maze from file " + filepath);
-                logger.info("**** Computing path");
                 maze = new Maze(filepath);
                 maze.printMaze();
             } catch(Exception e) {
-                logger.error("/!\\ An error has occured /!\\");
+                System.err.println("/!\\ An error has occured /!\\");
             }
             if (cmdline.hasOption("p")){
                 String command = cmdline.getOptionValue("p");
                 if (maze.checkSol(command)){
-                    logger.info("Solution works");
+                    System.out.println("This is a valid solution");
                 }
                 else {
-                    logger.info("Solution does NOT WORK");
+                    System.out.println("This is an invalid solution");
                 }
             }
             else{
@@ -64,11 +60,9 @@ public class Main {
             }
         }
         else{
-            logger.info("Must use the -i flag");
+            System.err.println("Must use the -i flag");
         }
-    
-        logger.info("PATH NOT COMPUTED");
-        logger.info("** End of MazeRunner");
+
     }
 }
 
@@ -170,32 +164,9 @@ class Solver{
     }
 
     boolean tryPath(String instructions, int[][] maze){
-        coordinate[0] = findStartPos(maze,0); // search leftmost column for open area
-        coordinate[1] = 0; // starting column is the leftmost, placeholder for now
-        for (int i = 0; i < instructions.length(); i++){
-            if (instructions.charAt(i) == 'R'){
-                current_direction = (current_direction + 1) % 4;
-            }
-            else if (instructions.charAt(i) == 'L'){
-                current_direction = (current_direction - 1 + 4) % 4;
-            }
-            else if(instructions.charAt(i) == 'F'){
-                coordinate[0] += directions[current_direction][0];
-                coordinate[1] += directions[current_direction][1];
-            }
-
-            if (coordinate[1] < 0 || coordinate[1] >= maze[0].length){ // out of bounds check
-                return false;
-            }
-
-            if (maze[coordinate[0]][coordinate[1]] == 1){ // if the current coordinate is a wall
-                return false;
-            }
-        }
-        if (coordinate[1] == maze[0].length-1){
-            return true;
-        }
-        return false;
+        int startPos = findStartPos(maze,0); // search leftmost column for open area
+        pathChecker checker  = new pathChecker();
+        return checker.tryPath(instructions,maze,this.coordinate,this.current_direction,startPos);
     }
 
     int findStartPos(int[][] maze,int col){
@@ -227,5 +198,37 @@ class Solver{
             sum = 0;
         }
         return factorized;
+    }
+}
+
+class pathChecker{
+    boolean tryPath(String instructions, int[][] maze,int[]coordinate,int current_direction,int startPos){
+        int[][] directions = {{-1, 0}, {0, 1}, {1, 0}, {0, -1}}; // up,right,down,left
+        coordinate[0] = startPos; // search leftmost column for open area
+        coordinate[1] = 0; // starting column is the leftmost, placeholder for now
+        for (int i = 0; i < instructions.length(); i++){
+            if (instructions.charAt(i) == 'R'){
+                current_direction = (current_direction + 1) % 4;
+            }
+            else if (instructions.charAt(i) == 'L'){
+                current_direction = (current_direction - 1 + 4) % 4;
+            }
+            else if(instructions.charAt(i) == 'F'){
+                coordinate[0] += directions[current_direction][0];
+                coordinate[1] += directions[current_direction][1];
+            }
+
+            if (coordinate[1] < 0 || coordinate[1] >= maze[0].length){ // out of bounds check
+                return false;
+            }
+
+            if (maze[coordinate[0]][coordinate[1]] == 1){ // if the current coordinate is a wall
+                return false;
+            }
+        }
+        if (coordinate[1] == maze[0].length-1){ // if reached the other side
+            return true;
+        }
+        return false;
     }
 }
