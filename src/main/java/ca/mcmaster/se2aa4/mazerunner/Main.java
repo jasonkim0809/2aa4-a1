@@ -7,15 +7,11 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Options;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 
 // java -jar target/mazerunner.jar examples/direct.maz.txt
 
 public class Main {
-
-    private static final Logger logger = LogManager.getLogger();
 
     public static void main(String[] args) {
         
@@ -29,7 +25,7 @@ public class Main {
             cmdline = parser.parse(options,args);
         } 
         catch (Exception e) {
-            logger.error("/!\\ An error has occured while parsing the command line /!\\");
+            System.err.println("/!\\ An error has occured while parsing the command line /!\\");
             return;
         }
 
@@ -49,10 +45,10 @@ public class Main {
             if (cmdline.hasOption("p")){
                 String command = cmdline.getOptionValue("p");
                 if (maze.checkSol(command)){
-                    System.out.println("This is a valid solution");
+                    System.out.println(command+"\nThis is a valid solution");
                 }
                 else {
-                    System.out.println("This is an invalid solution");
+                    System.out.println(command+"\nThis is an invalid solution");
                 }
             }
             else{
@@ -134,7 +130,7 @@ class Solver{
     // example: facing "north" would be a direction array of -1,0. Adding this to the current coordinate moves the solver up by one.
     void findPath(int[][] maze){ // maze is assumed to be in the correct format
         coordinate[0] = findStartPos(maze,0); // search first column for open area
-        while(coordinate[0] < maze.length - 1 && coordinate[1] < maze[0].length - 1){ // this is for starting on the left side of the maze.
+        while(coordinate[0] < maze.length - 1 && coordinate[1] < maze[0].length - 1){ // this is for starting on the left side of the maze
             int left = (current_direction - 1 + 4) % 4;
             int right = (current_direction + 1) % 4;
 
@@ -160,13 +156,17 @@ class Solver{
             }
             coordinate[0] += directions[current_direction][0];
             coordinate[1] += directions[current_direction][1];
+            if (coordinate[1] == 0){
+                System.err.println("Infinite loop detected.");
+                break;
+            }
         }
     }
 
     boolean tryPath(String instructions, int[][] maze){
         int startPos = findStartPos(maze,0); // search leftmost column for open area
         pathChecker checker  = new pathChecker();
-        return checker.tryPath(instructions,maze,this.coordinate,this.current_direction,startPos);
+        return checker.tryPath(instructions,maze,this.coordinate,startPos);
     }
 
     int findStartPos(int[][] maze,int col){
@@ -202,7 +202,8 @@ class Solver{
 }
 
 class pathChecker{
-    boolean tryPath(String instructions, int[][] maze,int[]coordinate,int current_direction,int startPos){
+    boolean tryPath(String instructions, int[][] maze,int[]coordinate,int startPos){
+        int current_direction = 1;
         int[][] directions = {{-1, 0}, {0, 1}, {1, 0}, {0, -1}}; // up,right,down,left
         coordinate[0] = startPos; // search leftmost column for open area
         coordinate[1] = 0; // starting column is the leftmost, placeholder for now
@@ -216,6 +217,10 @@ class pathChecker{
             else if(instructions.charAt(i) == 'F'){
                 coordinate[0] += directions[current_direction][0];
                 coordinate[1] += directions[current_direction][1];
+            }
+            else{
+                System.err.println("Must consist of R,F,L only");
+                return false;
             }
 
             if (coordinate[1] < 0 || coordinate[1] >= maze[0].length){ // out of bounds check
