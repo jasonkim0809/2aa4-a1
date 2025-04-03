@@ -4,18 +4,21 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
 
 public class DirectionsTest {
-    private Direction directionTester = new Direction("");
+    private Direction directionTester;
 
     @Test
     public void testEmptyInitialization(){
+        directionTester = new Direction("");
         assertEquals("N",directionTester.toString());
     }
 
     @Test
-    public void testTurningRight(){
+    public void testTurning(){
         directionTester = new Direction("N");
         directionTester.turnRight();
         assertEquals("E",directionTester.toString());
+        directionTester.turnLeft();
+        assertEquals("N",directionTester.toString());
     }
 
     @Test

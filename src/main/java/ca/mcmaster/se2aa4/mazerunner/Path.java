@@ -8,6 +8,9 @@ public class Path {
     }
     
     public String toFactorized(){ // consists of F, R, or L
+        if (this.currentPath.length() == 0){
+            return this.currentPath;
+        }
         String input = this.currentPath;
 
         char current = input.charAt(0);
@@ -28,7 +31,7 @@ public class Path {
             i += (sum - 1);
             sum = 0;
         }
-        return factorized;
+        return factorized.substring(0,factorized.length() - 1);
     }
 
     public String toCanonical(){
