@@ -6,16 +6,16 @@ public class Direction {
     // ROW, COLUMN (Y,X)
 
     public Direction(String startingDirection){
-        if (startingDirection == "N"){
+        if (startingDirection.equals("N")){
             this.directionIndex = 0;
         }
-        else if (startingDirection == "E"){
+        else if (startingDirection.equals("E")){
             this.directionIndex = 1;
         }
-        else if (startingDirection == "S"){
+        else if (startingDirection.equals("S")){
             this.directionIndex = 2;
         }
-        else if (startingDirection == "W"){
+        else if (startingDirection.equals("W")){
             this.directionIndex = 3;
         }
         else{
