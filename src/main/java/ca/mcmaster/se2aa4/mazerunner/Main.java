@@ -34,14 +34,17 @@ public class Main {
 
         Maze maze = null;
 
-        if (cmdline.hasOption("h")){
+        if (cmdline.hasOption("h")){ // help flag
             usage.generalUsage();
             return;
         }
 
-        if (cmdline.hasOption("i")){
+        if (cmdline.hasOption("i")){ // actually do stuff here
+
+            CommandHandler commandHandler = new CommandHandler();
             String startingDirection = "E";
             boolean startRight = false;
+
             if (cmdline.hasOption("r")){
                 startingDirection = "W";
                 startRight = true;
@@ -51,7 +54,6 @@ public class Main {
                 String filepath = cmdline.getOptionValue("i");
                 maze = new Maze(filepath);
                 maze.printMaze();
-
             } catch(Exception e) {
                 System.err.println("/!\\ An error has occured /!\\");
             }
@@ -60,18 +62,15 @@ public class Main {
                 PathChecker pathChecker = new PathChecker(startingDirection,startRight);
                 String command = cmdline.getOptionValue("p");
 
-                if (maze.checkSol(command,pathChecker)){
-                    System.out.println(command+"\nThis is a valid solution");
-                }
-                else {
-                    System.out.println(command+"\nThis is an invalid solution");
-                }
+                commandHandler.setCommand(new TryPathCommand(maze,command,pathChecker));
             }
             else{
                 Solver solver = new Solver(startingDirection,startRight);
-                Path path = maze.attemptSolve(solver);
-                System.out.println(path.toFactorized());
+
+                commandHandler.setCommand(new FindPathCommand(maze,solver));
             }
+
+            commandHandler.execute();
         }
         else{
             usage.iFlag();
