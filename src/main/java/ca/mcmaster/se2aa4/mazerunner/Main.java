@@ -59,10 +59,11 @@ public class Main {
             }
 
             if (cmdline.hasOption("p")){
-                PathChecker pathChecker = new PathChecker(startingDirection,startRight);
+                PathChecker pathChecker = PathChecker.getInstance();
+                pathChecker.initialize(startingDirection, startRight);
                 String command = cmdline.getOptionValue("p");
 
-                commandHandler.setCommand(new TryPathCommand(maze,command,pathChecker));
+                commandHandler.setCommand(new TryPathCommand(maze,command));
             }
             else{
                 Solver solver = new Solver(startingDirection,startRight);

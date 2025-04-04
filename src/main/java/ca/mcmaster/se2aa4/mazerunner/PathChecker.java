@@ -1,11 +1,22 @@
 package ca.mcmaster.se2aa4.mazerunner;
 
 public class PathChecker extends CoordinateInitializer{
+    private static PathChecker instance = null;
     private Direction direction;
     private Coordinate coordinate = new Coordinate(0,0);
     private boolean startRight;
 
-    public PathChecker(String startingDirection,boolean startRight){
+    private PathChecker(){
+    }
+
+    public static PathChecker getInstance(){
+        if (instance == null){
+            instance = new PathChecker();
+        }
+        return instance;
+    }
+
+    public void initialize(String startingDirection,boolean startRight){
         this.direction = new Direction(startingDirection);
         this.startRight = startRight;
     }

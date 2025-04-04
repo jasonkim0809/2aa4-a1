@@ -53,8 +53,8 @@ public class Maze{
         return solver.findPath(this);
     }
 
-    boolean checkSol(String instructions,PathChecker pathChecker){
-        return pathChecker.tryPath(instructions,this);
+    boolean checkSol(String instructions){
+        return PathChecker.getInstance().tryPath(instructions,this);
     }
 
     void printMaze(){

@@ -3,17 +3,15 @@ package ca.mcmaster.se2aa4.mazerunner;
 public class TryPathCommand implements Command{
     private Maze maze;
     private String inputPath;
-    private PathChecker pathChecker;
 
-    public TryPathCommand(Maze maze, String path, PathChecker pathChecker) {
+    public TryPathCommand(Maze maze, String path) {
         this.maze = maze;
         this.inputPath = path;
-        this.pathChecker = pathChecker;
     }
 
     @Override
     public void execute(){
-        if (maze.checkSol(inputPath,pathChecker)){
+        if (maze.checkSol(inputPath)){
             System.out.println(inputPath+"\nThis is a valid solution");
         }
         else {
