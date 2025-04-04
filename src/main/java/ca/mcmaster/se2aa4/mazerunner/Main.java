@@ -17,7 +17,8 @@ public class Main {
         Options options = new Options();
         options.addOption("i","input",true,"maze input");
         options.addOption("p","path",true,"custom path input");
-        options.addOption("d","direction",true,"side of maze to start on");
+        options.addOption("r","right",false,"start on right side");
+        options.addOption("h","help",false,"help flag");
 
         CommandLineParser parser = new DefaultParser();
         CommandLine cmdline;
@@ -33,7 +34,19 @@ public class Main {
 
         Maze maze = null;
 
+        if (cmdline.hasOption("h")){
+            usage.generalUsage();
+            return;
+        }
+
         if (cmdline.hasOption("i")){
+            String startingDirection = "E";
+            boolean startRight = false;
+            if (cmdline.hasOption("r")){
+                startingDirection = "W";
+                startRight = true;
+            }
+            
             try { // read maze from file
                 String filepath = cmdline.getOptionValue("i");
                 maze = new Maze(filepath);
@@ -44,7 +57,7 @@ public class Main {
             }
 
             if (cmdline.hasOption("p")){
-                PathChecker pathChecker = new PathChecker();
+                PathChecker pathChecker = new PathChecker(startingDirection,startRight);
                 String command = cmdline.getOptionValue("p");
 
                 if (maze.checkSol(command,pathChecker)){
@@ -55,13 +68,14 @@ public class Main {
                 }
             }
             else{
-                Solver solver = new Solver();
+                Solver solver = new Solver(startingDirection,startRight);
                 Path path = maze.attemptSolve(solver);
                 System.out.println(path.toFactorized());
             }
         }
         else{
             usage.iFlag();
+            usage.generalUsage();
         }
     }
 }

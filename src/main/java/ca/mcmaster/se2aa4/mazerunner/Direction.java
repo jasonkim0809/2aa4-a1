@@ -19,7 +19,7 @@ public class Direction {
             this.directionIndex = 3;
         }
         else{
-            this.directionIndex = 0;
+            this.directionIndex = 1;
         }
     }
 
@@ -37,7 +37,7 @@ public class Direction {
         else if (this.directionIndex == 3){
             return "W";
         }
-        return "N"; // error case, no initialization
+        return "E"; // error case, no initialization
     }
 
     public void turnRight(){

@@ -9,7 +9,7 @@ public class DirectionsTest {
     @Test
     public void testEmptyInitialization(){
         directionTester = new Direction("");
-        assertEquals("N",directionTester.toString());
+        assertEquals("E",directionTester.toString());
     }
 
     @Test

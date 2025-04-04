@@ -1,17 +1,30 @@
 package ca.mcmaster.se2aa4.mazerunner;
 
 public class Solver extends CoordinateInitializer{
-    private Direction direction = new Direction("E");
+    private Direction direction;
     private Coordinate coordinate = new Coordinate(0,0);
+    private boolean startRight;
+
+    public Solver(String startingDirection,boolean startRight){
+        this.direction = new Direction(startingDirection);
+        this.startRight = startRight;
+    }
 
     public Path findPath(Maze maze){ // maze is assumed to be in the correct format
 
         Path path = new Path();
-        coordinate.updateY(findStartPos(maze.mazeArray,0)); // search first column for open area
+        coordinate.updateY(findStartPos(maze.mazeArray,startRight)); // search first column for open area
+        if (startRight){
+            coordinate.updateX(maze.getWidth()-1);
+        }
 
         while(!coordinate.outOfWidth(maze)){ // this is for starting on the left side of the maze
-            
-            if (coordinate.xPos == maze.getHeight() - 1){
+            if (startRight){
+                if (coordinate.xPos == 0){
+                    return path;
+                }
+            }
+            else if (coordinate.xPos == maze.getWidth() - 1){
                 return path;
             }
 
@@ -45,7 +58,13 @@ public class Solver extends CoordinateInitializer{
             // move forwards here
             coordinate = direction.moveForwards(coordinate);
 
-            if (coordinate.xPos == 0){ // check if back at start
+            if (startRight){
+                if (coordinate.xPos == maze.getWidth() - 1){
+                    System.err.println("Infinite loop detected.");
+                    break;
+                }
+            }
+            else if (coordinate.xPos == 0){ // check if back at start
                 System.err.println("Infinite loop detected.");
                 break;
             }

@@ -38,11 +38,11 @@ public class Maze{
     }
 
     public int getWidth(){
-        return mazeArray.length;
+        return mazeArray[0].length;
     }
 
     public int getHeight(){
-        return mazeArray[0].length;
+        return mazeArray.length;
     }
 
     public int getTile(int row, int col){

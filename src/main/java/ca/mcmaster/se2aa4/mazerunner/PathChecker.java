@@ -1,11 +1,22 @@
 package ca.mcmaster.se2aa4.mazerunner;
 
 public class PathChecker extends CoordinateInitializer{
-    private Direction direction = new Direction("E");
+    private Direction direction;
     private Coordinate coordinate = new Coordinate(0,0);
+    private boolean startRight;
+
+    public PathChecker(String startingDirection,boolean startRight){
+        this.direction = new Direction(startingDirection);
+        this.startRight = startRight;
+    }
 
     boolean tryPath(String instructions, Maze maze){
-        coordinate.updateY(findStartPos(maze.mazeArray,0)); // search first column for open area
+
+        coordinate.updateY(findStartPos(maze.mazeArray,this.startRight)); // search first column for open area
+        if (startRight){
+            coordinate.updateX(maze.getWidth()-1);
+        }
+
         for (int i = 0; i < instructions.length(); i++){
             if (instructions.charAt(i) == 'R'){
                 direction.turnRight();
@@ -17,7 +28,7 @@ public class PathChecker extends CoordinateInitializer{
                 coordinate = direction.moveForwards(coordinate);
             }
             else{
-                System.err.println("Must consist of R,F,L only");
+                System.err.println("Please enter a string in canonical form consisting of R,F,L only!");
                 return false;
             }
 
@@ -29,7 +40,12 @@ public class PathChecker extends CoordinateInitializer{
                 return false;
             }
             
-            if (coordinate.xPos == maze.getWidth() - 1){ // if reached the other side
+            if (startRight){
+                if (coordinate.xPos == 0){ // reached left side
+                    return true;
+                }
+            }
+            else if (coordinate.xPos == maze.getWidth() - 1){ // reached right side
                 return true;
             }
         }
