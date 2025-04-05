@@ -39,7 +39,7 @@ public class Main {
             return;
         }
 
-        if (cmdline.hasOption("i")){ // actually do stuff here
+        if (cmdline.hasOption("i")){
 
             CommandHandler commandHandler = new CommandHandler();
             String startingDirection = "E";
